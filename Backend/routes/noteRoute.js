@@ -1,6 +1,8 @@
 const express=require('express');
 const Note= require('../Models/Note.js');
+const { mongoose } = require('mongoose');
 const router=express.Router();
+
 
 router.post('/notes', async (req,res)=>{
     const {title,content} =req.body;
@@ -47,16 +49,18 @@ router.get('/notes/:id', async(req,res)=>{
 router.put('/notes/:id', async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
-
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid ID format' });
+    }
     try {
+        if (!title || !content) {
+            return res.status(400).json({ message: 'Title and content are required' });
+        }
         const updatedNote = await Note.findByIdAndUpdate(
             id,
             { title, content },
             { new: true }  // Return the updated note
         );
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: 'Invalid ID format' });
-        }
         if (!updatedNote) {
             return res.status(404).json({ message: 'Note not found' });
         }
