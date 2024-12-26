@@ -2,14 +2,15 @@ const express=require('express');
 const Note= require('../Models/Note.js');
 const { mongoose } = require('mongoose');
 const router=express.Router();
+const authenticateToken=require('../MiddleWare/authMiddleWare.js')
 
-
-router.post('/notes', async (req,res)=>{
+router.post('/notes', authenticateToken, async (req,res)=>{
     const {title,content} =req.body;
 
     const newNote= new Note({
         title,
         content,
+        user:req.user.id,
     });
 
     try{
@@ -21,9 +22,9 @@ router.post('/notes', async (req,res)=>{
     }
 });
 
-router.get('/notes',async(req,res)=>{
+router.get('/notes',authenticateToken,async(req,res)=>{
     try{
-        const notes=await Note.find();
+        const notes=await Note.find({user:req.user.id}).populate('user', 'username email');
         res.status(200).json(notes);
     }
     catch(error){
@@ -32,9 +33,13 @@ router.get('/notes',async(req,res)=>{
 })
 
 
-router.get('/notes/:id', async(req,res)=>{
+router.get('/notes/:id', authenticateToken, async(req,res)=>{
     try{
-        const note=await Note.findById(req.params.id);
+        const {id}= req.params;
+        if(!monggose.Types.ObjectId.isValid(id)){
+            return res.status(400).json({message:'Invalid ID format'});
+        }
+        const note=await Note.findOne({_id:id, user:req.user.id});
         if(!note){
             return res.status(404).json({message:'Note not found'});
         }
@@ -46,7 +51,7 @@ router.get('/notes/:id', async(req,res)=>{
 })
 
 // Express route example for PUT /api/notes/:id
-router.put('/notes/:id', async (req, res) => {
+router.put('/notes/:id',authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -57,7 +62,7 @@ router.put('/notes/:id', async (req, res) => {
             return res.status(400).json({ message: 'Title and content are required' });
         }
         const updatedNote = await Note.findByIdAndUpdate(
-            id,
+            {_id:id, user:req.user.id},
             { title, content },
             { new: true }  // Return the updated note
         );
@@ -76,9 +81,15 @@ router.put('/notes/:id', async (req, res) => {
 
 
 
-router.delete('/notes/:id', async(req,res)=>{
+router.delete('/notes/:id',authenticateToken, async(req,res)=>{
+    const { id } = req.params;
+
+    // Validate ID format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid ID format' });
+    }
     try{
-        const deleteNote=await Note.findByIdAndDelete(req.params.id);
+        const deleteNote=await Note.findOneAndDelete({ _id: id, user: req.user.id });
         if(!deleteNote){
             return res.status(404).json({ message: 'Note not found' });
         }

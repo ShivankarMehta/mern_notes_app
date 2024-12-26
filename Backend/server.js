@@ -2,14 +2,18 @@ const express= require('express');
 const mongoose= require('mongoose');
 const cors=require('cors');
 const dotenv=require('dotenv');
-
+const cookieParser = require('cookie-parser');
 const noteRoutes= require('./routes/noteRoute');
-
+const userRoutes=require('./routes/userRoute');
 dotenv.config();
 
 const app=express();
-
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:3002', // Your frontend's origin
+    credentials: true, // Allow cookies
+}
+));
 app.use(express.json());
 const port=3001
 
@@ -22,6 +26,7 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/api',noteRoutes)
+app.use('/user',userRoutes)
 
 app.listen(port,()=>{
     console.log(`App is Listening on port ${port}`)
