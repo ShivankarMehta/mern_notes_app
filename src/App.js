@@ -12,11 +12,11 @@ function App() {
       {/* <ConditionalHeader />  */}
       <Routes>
       <Route path="/noteslist" element={<NotesList />} />
-      <Route path="/create" element={<CreateNote />} />
-      <Route path="/update/:id" element={<UpdateNote />} />
       <Route element={<AuthLayout/>}>
       <Route path="/" element={<Signup />} />
-      <Route path="/login" element={<Login />} />  {/* Route for UpdateNote */}
+      <Route path="/create" element={<CreateNote />} />
+      <Route path="/login" element={<Login />} /> 
+      <Route path="/update/:id" element={<UpdateNote />} /> {/* Route for UpdateNote */}
       </Route>
       </Routes>
     </Router>

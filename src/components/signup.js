@@ -21,7 +21,7 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:3001/user/signup", formData);
+            await axios.post("https://notes-app-backend-5695.onrender.com/user/signup", formData);
             navigate("/login");
         } catch (error) {
             console.error("Error signing up:", error);

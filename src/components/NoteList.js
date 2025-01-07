@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../Theme/ThemeContext';
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+
 function NotesList() {
     const [notes, setNotes] = useState([]);
     const [username, setUsername] = useState('');
+    const [filteredNotes, setFilteredNotes]=useState([]);
+    const [searchKeyword, setSearchKeyword]=useState('');
     const { theme, toggleTheme } = useTheme();
     const navigate=useNavigate();
 
     useEffect(() => {
         const fetchNotes= async() =>{
             try{
-                const response=await axios.get('http://localhost:3001/api/notes',{
+                const response=await axios.get('https://notes-app-backend-5695.onrender.com/api/notes',{
                     withCredentials:true,
                 });
-                setNotes(response.data)
+                setNotes(response.data);
+                setFilteredNotes(response.data);
                 if(response.data.length>0 && response.data[0].user){
                     setUsername(response.data[0].user.username);
                 }
@@ -33,7 +35,7 @@ function NotesList() {
         };
         const fetchProfile=async()=>{
             try{
-                const response=await axios.get('http://localhost:3001/user/profile',{
+                const response=await axios.get('https://notes-app-backend-5695.onrender.com/user/profile',{
                     withCredentials:true,
                 });
                 setUsername(response.data.username);
@@ -44,6 +46,34 @@ function NotesList() {
         fetchNotes();
     }, [navigate]);
 
+
+    const debounce=(func,delay) =>{
+        let timer;
+        return (...args)=>{
+            clearTimeout(timer);
+            timer=setTimeout(()=> func(...args), delay);
+        };
+    };
+
+    const handleSearch= useCallback(
+        debounce((keyword)=>{
+            const lowerCaseKeyboard= keyword.toLowerCase();
+            const filtered=notes.filter(
+                (note)=>
+                    note.title.toLowerCase().includes(lowerCaseKeyboard) || 
+                    note.content.toLowerCase().includes(lowerCaseKeyboard)
+            );
+            setFilteredNotes(filtered);
+        }, 300),
+        [notes]
+    )
+
+    const handleSearchChange=(e) =>{
+        const keyword=e.target.value;
+        setSearchKeyword(keyword);
+        handleSearch(keyword);
+    }
+
     const handleEdit=(id)=>{
      navigate(`/update/${id}`);
      
@@ -51,7 +81,7 @@ function NotesList() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/api/notes/${id}`, {
+            await axios.delete(`https://notes-app-backend-5695.onrender.com/api/notes/${id}`, {
                 withCredentials: true, // Include cookies in the request
             });
             setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
@@ -67,7 +97,7 @@ function NotesList() {
 
     const handleLogout= async() =>{
         try{
-            await axios.post('http://localhost:3001/user/logout', {}, { withCredentials: true,});
+            await axios.post('https://notes-app-backend-5695.onrender.com/user/logout', {}, { withCredentials: true,});
             navigate('/login'); 
         }
         catch (error) {
@@ -101,6 +131,15 @@ function NotesList() {
 
             {/* Notes Section */}
             <div className="max-w-4xl mx-auto p-6">
+            <div className="mb-4">
+                    <input
+                        type="text"
+                        value={searchKeyword}
+                        onChange={handleSearchChange}
+                        placeholder="Search notes by title or content..."
+                        className="border border-gray-300 rounded-md shadow-sm p-4 w-full"
+                    />
+            </div>
     <div
         className="shadow-lg rounded-lg p-6"
         style={{
@@ -119,9 +158,9 @@ function NotesList() {
                 Add Note
             </button>
         </div>
-        {notes.length > 0 ? (
+        {filteredNotes.length > 0 ? (
             <ul className="space-y-4">
-                {notes.map((note) => (
+                {filteredNotes.map((note) => (
                     <li
                         key={note._id}
                         className="border rounded-md shadow-sm p-4"
@@ -133,11 +172,11 @@ function NotesList() {
                     >
                         <h3
                             className="text-lg font-semibold"
-                            style={{ color: 'var(--text-color)' }}
+                            style={{ color: note.color }}
                         >
                             {note.title}
                         </h3>
-                        <p className="mt-2" style={{ color: 'var(--text-color)' }}>
+                        <p className="mt-2" style={{ color: note.color }}>
                             {note.content}
                         </p>
                         <small
