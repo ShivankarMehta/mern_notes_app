@@ -3,26 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --header-bg-color: #008080;
+  --bg-color: #f9f9f9;
+  --text-color: #333333;
+  --header-bg-color: #004d99;
   --header-text-color: #ffffff;
+  --button-primary: #0056b3;
+  --button-primary-hover: #004080;
+  --button-danger: #d32f2f;
+  --button-danger-hover: #9a0007;
+  --button-secondary: #cccccc;
+  --button-secondary-hover: #aaaaaa;
 }
 
 .dark {
-  --bg-color: #121212;
+  --bg-color: #1a1a1a;
   --text-color: #e0e0e0;
-  --header-bg-color: #005A57;
+  --header-bg-color: #1e3a8a;
   --header-text-color: #ffffff;
+  --button-primary: #3b82f6;
+  --button-primary-hover: #2563eb;
+  --button-danger: #ef4444;
+  --button-danger-hover: #b91c1c;
+  --button-secondary: #4b5563;
+  --button-secondary-hover: #374151;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
+  font-family: 'Inter', sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
 
 header {
   background-color: var(--header-bg-color);
   color: var(--header-text-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

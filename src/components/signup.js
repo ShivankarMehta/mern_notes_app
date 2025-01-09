@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTheme } from "../Theme/ThemeContext"; // Import ThemeContext
-
+const API_USER = process.env.REACT_APP_API_USER;
 function Signup() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
@@ -21,7 +21,13 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("https://notes-app-backend-5695.onrender.com/user/signup", formData);
+            console.log("Request Payload:", formData);
+            await axios.post(`${API_USER}/user/signup`, formData,
+                {headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+            );
             navigate("/login");
         } catch (error) {
             console.error("Error signing up:", error);

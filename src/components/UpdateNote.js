@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-
+const API_USER = process.env.REACT_APP_API_USER;
 function UpdateNote() {
     const { id } = useParams(); // Get the note ID from the URL
     const navigate = useNavigate(); // Used to navigate after the update
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [color,setColor]=useState('');
+    const [color,setColor]=useState('#000000');
 
     // Fetch the note data by ID when the component is mounted or the ID changes
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const response = await axios.get(`https://notes-app-backend-5695.onrender.com/api/notes/${id}`, {
+                const response = await axios.get(`${API_USER}/api/notes/${id}`, {
                     withCredentials: true,
                 });
                 // Set the note data into state
@@ -33,7 +33,7 @@ function UpdateNote() {
         e.preventDefault(); // Prevent the default form submission (to stop page reload)
 
         axios
-            .put(`https://notes-app-backend-5695.onrender.com/api/notes/${id}`, { title, content, color }, {
+            .put(`${API_USER}/api/notes/${id}`, { title, content, color }, {
                 withCredentials:true,
             })
             .then((response) => {

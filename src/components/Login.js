@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTheme } from "../Theme/ThemeContext";
+const API_USER = process.env.REACT_APP_API_USER;
 function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
@@ -19,8 +20,11 @@ function Login() {
         e.preventDefault();
 
         try {
-            await axios.post('https://notes-app-backend-5695.onrender.com/user/login', formData, {
-                withCredentials: true, // Include cookies in the request
+            await axios.post(`${API_USER}/user/login`, formData, {
+                withCredentials: true, 
+                headers: {
+                    "Content-Type": "application/json", // Ensure correct headers
+                },
             });
             navigate('/noteslist');
         } catch (error) {

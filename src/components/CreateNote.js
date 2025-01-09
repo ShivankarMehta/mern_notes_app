@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
+const API_USER = process.env.REACT_APP_API_USER;
 function CreateNote(){
  const [title, setTitle]= useState('');
  const [content, setContent]= useState('');
@@ -13,7 +13,7 @@ const handleSubmit=(e)=>{
   
 
     axios
-    .post('https://notes-app-backend-5695.onrender.com//api/notes', {title,content,color},{
+    .post(`${API_USER}/api/notes`, {title,content,color},{
         withCredentials:true,
     })
     .then((response)=>{
