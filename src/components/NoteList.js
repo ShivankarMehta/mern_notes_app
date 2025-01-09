@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
-import {saveAs} from "file-saver"
 import { useTheme } from "../Theme/ThemeContext";
 const API_USER = process.env.REACT_APP_API_USER;
 
@@ -83,18 +82,15 @@ function NotesList() {
     };
   };
 
-  const handleSearch = useCallback(
-    debounce((keyword) => {
-      const lowerCaseKeyword = keyword.toLowerCase();
-      const filtered = notes.filter(
-        (note) =>
-          note.title.toLowerCase().includes(lowerCaseKeyword) ||
-          note.content.toLowerCase().includes(lowerCaseKeyword)
-      );
-      setFilteredNotes(filtered);
-    }, 300),
-    [notes]
-  );
+  const handleSearch = useRef(debounce((keyword) => {
+    const lowerCaseKeyword = keyword.toLowerCase();
+    const filtered = notes.filter(
+      (note) =>
+        note.title.toLowerCase().includes(lowerCaseKeyword) ||
+        note.content.toLowerCase().includes(lowerCaseKeyword)
+    );
+    setFilteredNotes(filtered);
+  }, 300));
 
   const handleSearchChange = (e) => {
     const keyword = e.target.value;

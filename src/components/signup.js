@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useTheme } from "../Theme/ThemeContext"; // Import ThemeContext
 const API_USER = process.env.REACT_APP_API_USER;
 function Signup() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
-    const { theme } = useTheme(); // Access the current theme
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
@@ -131,7 +129,7 @@ function Signup() {
                             >
                                 I accept the{" "}
                                 <a
-                                    href="javascript:void(0);"
+                                    href="/"
                                     className="text-blue-500 font-semibold hover:underline ml-1"
                                 >
                                     Terms and Conditions

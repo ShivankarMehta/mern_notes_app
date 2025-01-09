@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useTheme } from "../Theme/ThemeContext";
 const API_USER = process.env.REACT_APP_API_USER;
 function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -11,7 +10,6 @@ function Login() {
     };
     const navigate = useNavigate();
     
-    const { theme } = useTheme(); 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };

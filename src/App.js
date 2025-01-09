@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes ,useLocation} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import NotesList from './components/NoteList';
 import CreateNote from "./components/CreateNote";
 import UpdateNote from './components/UpdateNote';
