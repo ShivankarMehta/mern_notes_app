@@ -14,21 +14,49 @@ function Login() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         await axios.post(`${API_USER}/user/login`, formData, {
+    //             withCredentials: true, 
+    //             headers: {
+    //                 "Content-Type": "application/json", // Ensure correct headers
+    //             },
+    //         });
+    //         navigate('/noteslist');
+    //     } catch (error) {
+    //         console.error('Error logging in:', error);
+    //     }
+    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
-            await axios.post(`${API_USER}/user/login`, formData, {
-                withCredentials: true, 
+            console.log("API Endpoint:", `${API_USER}/user/login`);
+            console.log("Request Payload:", formData);
+    
+            const response = await axios.post(`${API_USER}/user/login`, formData, {
+                withCredentials: true, // Ensures cookies are sent if the backend uses them
                 headers: {
                     "Content-Type": "application/json", // Ensure correct headers
                 },
             });
+    
+            console.log("Login Success:", response.data);
             navigate('/noteslist');
         } catch (error) {
-            console.error('Error logging in:', error);
+            if (error.response) {
+                console.error("Error Response Data:", error.response.data); // Logs error details from the backend
+                console.error("Error Response Status:", error.response.status); // Logs the status code
+            } else if (error.request) {
+                console.error("No Response Received:", error.request); // Logs the request if no response was received
+            } else {
+                console.error("Error Message:", error.message); // Logs any other errors
+            }
         }
     };
+    
 
     return (
         <div className="font-[sans-serif] md:h-screen bg-[var(--bg-color)] text-[var(--text-color)]">
