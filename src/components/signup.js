@@ -115,7 +115,7 @@ function Signup() {
                             </div>
                         </div>
 
-                        <div className="flex items-center mt-6">
+                        {/* <div className="flex items-center mt-6">
                             <input
                                 id="remember-me"
                                 name="remember-me"
@@ -135,7 +135,7 @@ function Signup() {
                                     Terms and Conditions
                                 </a>
                             </label>
-                        </div>
+                        </div> */}
 
                         <div className="mt-12">
                             <button
